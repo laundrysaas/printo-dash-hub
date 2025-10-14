@@ -9,7 +9,8 @@ import {
   Headphones,
   Receipt,
   BarChart3,
-  Settings
+  Settings,
+  Globe
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
@@ -28,6 +29,7 @@ const navigationItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Orders & Production", url: "/orders", icon: ShoppingCart },
   { title: "Catalog & Templates", url: "/catalog", icon: Package },
+  { title: "Website CMS Console", url: "/cms", icon: Globe },
   { title: "Pricing Engine", url: "/pricing", icon: DollarSign },
   { title: "Prepress & QA", url: "/prepress", icon: FileCheck },
   { title: "Fulfillment & Shipping", url: "/fulfillment", icon: Truck },

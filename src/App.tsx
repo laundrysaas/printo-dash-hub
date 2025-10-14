@@ -22,6 +22,7 @@ const App = () => (
           <Route path="/" element={<AppLayout><Dashboard /></AppLayout>} />
           <Route path="/orders" element={<AppLayout><Orders /></AppLayout>} />
           <Route path="/catalog" element={<AppLayout><Catalog /></AppLayout>} />
+          <Route path="/cms" element={<AppLayout><ComingSoon title="Website CMS Management Console" description="Publish pages, manage content, and optimize SEO" /></AppLayout>} />
           <Route path="/pricing" element={<AppLayout><ComingSoon title="Pricing Engine" description="Manage tiered pricing, bulk rules, and contract tables" /></AppLayout>} />
           <Route path="/prepress" element={<AppLayout><ComingSoon title="Prepress & QA" description="Manual preflight overrides and quality control" /></AppLayout>} />
           <Route path="/fulfillment" element={<AppLayout><ComingSoon title="Fulfillment & Shipping" description="Pick, pack, and dispatch management" /></AppLayout>} />
