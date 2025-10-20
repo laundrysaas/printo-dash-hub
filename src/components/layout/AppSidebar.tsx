@@ -57,7 +57,7 @@ const navigationItems = [{
 export function AppSidebar() {
   return <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border p-4 bg-fuchsia-200">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 bg-fuchsia-200">
           <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
             <span className="text-sidebar-primary-foreground font-bold text-sm">P</span>
           </div>
