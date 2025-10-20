@@ -1,0 +1,313 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Search, Filter, Plus, Mail, Phone, MapPin, Calendar, Star } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+export default function Customers() {
+  const stats = [
+    { label: "Total Customers", value: "2,847", change: "+12.5%", changePositive: true },
+    { label: "Active This Month", value: "1,923", change: "+8.2%", changePositive: true },
+    { label: "New This Month", value: "156", change: "+15.3%", changePositive: true },
+    { label: "Avg Order Value", value: "KD 28.50", change: "+3.1%", changePositive: true },
+  ];
+
+  const customers = [
+    {
+      id: "CUST-001",
+      name: "Fatima Al-Zahra",
+      location: "Salmiya",
+      email: "fatima.alzahra@email.com",
+      phone: "+965 9876 5432",
+      orders: 47,
+      lastOrder: "2024-01-14",
+      totalSpent: "KD 1,245.50",
+      status: "Active",
+      rating: 4.8,
+    },
+    {
+      id: "CUST-002",
+      name: "Omar Hassan",
+      location: "City",
+      email: "omar.hassan@email.com",
+      phone: "+965 9876 5433",
+      orders: 32,
+      lastOrder: "2024-01-13",
+      totalSpent: "KD 890.25",
+      status: "Active",
+      rating: 4.6,
+    },
+    {
+      id: "CUST-003",
+      name: "Noura Al-Sabah",
+      location: "Hawally",
+      email: "noura.alsabah@email.com",
+      phone: "+965 9876 5434",
+      orders: 28,
+      lastOrder: "2024-01-12",
+      totalSpent: "KD 675.75",
+      status: "Active",
+      rating: 4.9,
+    },
+    {
+      id: "CUST-004",
+      name: "Hasan Al-Rashid",
+      location: "Salmiya",
+      email: "hasan.alrashid@email.com",
+      phone: "+965 9876 5435",
+      orders: 15,
+      lastOrder: "2023-12-28",
+      totalSpent: "KD 425.00",
+      status: "Inactive",
+      rating: 4.2,
+    },
+    {
+      id: "CUST-005",
+      name: "Reem Al-Mutawa",
+      location: "City",
+      email: "reem.almutawa@email.com",
+      phone: "+965 9876 5436",
+      orders: 52,
+      lastOrder: "2024-01-15",
+      totalSpent: "KD 1,567.80",
+      status: "VIP",
+      rating: 5,
+    },
+    {
+      id: "CUST-006",
+      name: "Ali Al-Kandari",
+      location: "Hawally",
+      email: "ali.alkandari@email.com",
+      phone: "+965 9876 5437",
+      orders: 38,
+      lastOrder: "2024-01-11",
+      totalSpent: "KD 1,120.40",
+      status: "Active",
+      rating: 4.7,
+    },
+  ];
+
+  const topCustomers = [
+    { name: "Fatima Al-Zahra", amount: "KD 1,245.50" },
+    { name: "Omar Hassan", amount: "KD 890.25" },
+    { name: "Noura Al-Sabah", amount: "KD 675.75" },
+  ];
+
+  const recentCustomers = [
+    { name: "Ali Al-Kandari", date: "2023-07-30" },
+    { name: "Reem Al-Mutawa", date: "2023-11-05" },
+    { name: "Hasan Al-Rashid", date: "2023-04-18" },
+  ];
+
+  const segments = [
+    { date: "2023-07-30", status: "Active", count: 2456 },
+    { date: "2023-11-05", status: "VIP", count: 234 },
+    { date: "2023-04-18", status: "Inactive", count: 157 },
+  ];
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "Active":
+        return <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20">Active</Badge>;
+      case "VIP":
+        return <Badge className="bg-purple-500/10 text-purple-700 hover:bg-purple-500/20">VIP</Badge>;
+      case "Inactive":
+        return <Badge variant="secondary">Inactive</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`h-3.5 w-3.5 ${
+              star <= Math.floor(rating)
+                ? "fill-yellow-400 text-yellow-400"
+                : "fill-muted text-muted"
+            }`}
+          />
+        ))}
+        <span className="ml-1 text-sm text-muted-foreground">{rating}</span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Customers</h1>
+        <p className="text-muted-foreground">Manage customer relationships and track engagement.</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <Card key={stat.label}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {stat.label}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className={`text-xs ${stat.changePositive ? "text-emerald-600" : "text-destructive"}`}>
+                {stat.change}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Search and Actions */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search customers by name, email, phone..."
+            className="pl-9"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm">
+            <Filter className="mr-2 h-4 w-4" />
+            Filters
+          </Button>
+          <Button size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Customer
+          </Button>
+        </div>
+      </div>
+
+      {/* Customers Table */}
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox />
+                </TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead>Orders</TableHead>
+                <TableHead>Total Spent</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Rating</TableHead>
+                <TableHead className="text-right">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {customers.map((customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell>
+                    <Checkbox />
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="font-medium">{customer.name}</div>
+                      <div className="text-xs text-muted-foreground">{customer.id}</div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {customer.location}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 text-sm">
+                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-muted-foreground">{customer.email}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm">
+                        <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-muted-foreground">{customer.phone}</span>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="font-medium">{customer.orders} orders</div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Calendar className="h-3 w-3" />
+                        Last: {customer.lastOrder}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium">{customer.totalSpent}</TableCell>
+                  <TableCell>{getStatusBadge(customer.status)}</TableCell>
+                  <TableCell>{renderStars(customer.rating)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="outline" size="sm">
+                      View
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Customer Insights */}
+      <div>
+        <h2 className="text-xl font-bold mb-4">Customer Insights</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* Top Customers by Spend */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Top Customers by Spend</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {topCustomers.map((customer, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <span className="text-sm">{customer.name}</span>
+                  <span className="text-sm font-medium">{customer.amount}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Recent Customers */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Recent Customers</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {recentCustomers.map((customer, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <span className="text-sm">{customer.name}</span>
+                  <span className="text-sm text-muted-foreground">{customer.date}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Customer Segments */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Customer Segments</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {segments.map((segment, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">{segment.date}</span>
+                    {getStatusBadge(segment.status)}
+                  </div>
+                  <span className="text-sm font-medium">{segment.count}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
