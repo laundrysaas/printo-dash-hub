@@ -11,6 +11,7 @@ import CMS from "./pages/CMS";
 import Workstations from "./pages/Workstations";
 import Fulfillment from "./pages/Fulfillment";
 import Customers from "./pages/Customers";
+import Finance from "./pages/Finance";
 import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
 
@@ -33,8 +34,8 @@ const App = () => (
           <Route path="/fulfillment" element={<AppLayout><Fulfillment /></AppLayout>} />
           <Route path="/inventory" element={<AppLayout><ComingSoon title="Inventory & Procurement" description="Stock levels, purchase orders, and vendor management" /></AppLayout>} />
           <Route path="/customers" element={<AppLayout><Customers /></AppLayout>} />
-          <Route path="/customer-service" element={<AppLayout><ComingSoon title="Customer Service Desk" description="Omni-inbox and support ticket management" /></AppLayout>} />
-          <Route path="/finance" element={<AppLayout><ComingSoon title="Finance" description="Invoicing, payouts, and accounting exports" /></AppLayout>} />
+          <Route path="/customer-service" element={<AppLayout><ComingSoon title="Support Team" description="Omni-inbox and support ticket management" /></AppLayout>} />
+          <Route path="/finance" element={<AppLayout><Finance /></AppLayout>} />
           <Route path="/analytics" element={<AppLayout><ComingSoon title="Analytics" description="Sales, utilization, and performance metrics" /></AppLayout>} />
           <Route path="/settings" element={<AppLayout><ComingSoon title="Settings" description="Roles, permissions, and system configuration" /></AppLayout>} />
           <Route path="*" element={<NotFound />} />

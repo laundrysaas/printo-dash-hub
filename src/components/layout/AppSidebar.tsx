@@ -42,7 +42,7 @@ const navigationItems = [{
   url: "/customers",
   icon: Users
 }, {
-  title: "Customer Service",
+  title: "Support Team",
   url: "/customer-service",
   icon: Headphones
 }, {
