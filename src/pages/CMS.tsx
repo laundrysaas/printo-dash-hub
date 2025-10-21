@@ -105,8 +105,8 @@ const CMS = () => {
                   <Globe className="h-8 w-8 text-primary" />
                   <Badge>Live</Badge>
                 </div>
-                <CardTitle className="mt-4">SEO Landing Pages</CardTitle>
-                <CardDescription>Category and product landing pages</CardDescription>
+                <CardTitle className="mt-4">Manage Printing Services</CardTitle>
+                <CardDescription>Edit and modify titles, paper sizes, bindings, academic works</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="text-sm text-muted-foreground">
