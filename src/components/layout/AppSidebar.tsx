@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingCart, Truck, Boxes, Headphones, Receipt, BarChart3, Settings, Globe, MonitorCog, Users, Megaphone, Bot } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Truck, Boxes, Headphones, Receipt, BarChart3, Settings, Globe, MonitorCog, Users, Megaphone, Bot, Building2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader } from "@/components/ui/sidebar";
 const navigationItems = [{
@@ -29,6 +29,10 @@ const navigationItems = [{
   title: "Inventory",
   url: "/inventory",
   icon: Boxes
+}, {
+  title: "B2B Corporate",
+  url: "/b2b-corporate",
+  icon: Building2
 }, {
   title: "Customers",
   url: "/customers",
