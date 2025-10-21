@@ -49,7 +49,7 @@ const B2BCorporate = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$145K</div>
+            <div className="text-2xl font-bold">145K KD</div>
             <p className="text-xs text-muted-foreground">+12% from last month</p>
           </CardContent>
         </Card>
@@ -71,7 +71,7 @@ const B2BCorporate = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$3,250</div>
+            <div className="text-2xl font-bold">3,250 KD</div>
             <p className="text-xs text-muted-foreground">+5.2% increase</p>
           </CardContent>
         </Card>
@@ -98,7 +98,7 @@ const B2BCorporate = () => {
                     <Building2 className="h-4 w-4 text-primary" />
                     <h4 className="font-semibold">Tech Solutions Inc.</h4>
                   </div>
-                  <p className="text-sm text-muted-foreground">Premium Tier • $45K/month</p>
+                  <p className="text-sm text-muted-foreground">Premium Tier • 45K KD/month</p>
                 </div>
                 <Badge>Active</Badge>
               </div>
@@ -109,7 +109,7 @@ const B2BCorporate = () => {
                     <Building2 className="h-4 w-4 text-primary" />
                     <h4 className="font-semibold">Global Marketing Group</h4>
                   </div>
-                  <p className="text-sm text-muted-foreground">Enterprise Tier • $78K/month</p>
+                  <p className="text-sm text-muted-foreground">Enterprise Tier • 78K KD/month</p>
                 </div>
                 <Badge>Active</Badge>
               </div>
@@ -120,7 +120,7 @@ const B2BCorporate = () => {
                     <Building2 className="h-4 w-4 text-primary" />
                     <h4 className="font-semibold">Design Studio Pro</h4>
                   </div>
-                  <p className="text-sm text-muted-foreground">Standard Tier • $12K/month</p>
+                  <p className="text-sm text-muted-foreground">Standard Tier • 12K KD/month</p>
                 </div>
                 <Badge variant="secondary">Pending Review</Badge>
               </div>
@@ -144,7 +144,7 @@ const B2BCorporate = () => {
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex-1">
                   <h4 className="font-semibold">Business Cards - 50,000 units</h4>
-                  <p className="text-sm text-muted-foreground">Tech Solutions Inc. • $8,500</p>
+                  <p className="text-sm text-muted-foreground">Tech Solutions Inc. • 8,500 KD</p>
                 </div>
                 <Badge>In Production</Badge>
               </div>
@@ -152,7 +152,7 @@ const B2BCorporate = () => {
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex-1">
                   <h4 className="font-semibold">Marketing Brochures - 25,000 units</h4>
-                  <p className="text-sm text-muted-foreground">Global Marketing • $12,300</p>
+                  <p className="text-sm text-muted-foreground">Global Marketing • 12,300 KD</p>
                 </div>
                 <Badge variant="secondary">Pending Approval</Badge>
               </div>
@@ -160,7 +160,7 @@ const B2BCorporate = () => {
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex-1">
                   <h4 className="font-semibold">Custom Stationery - 10,000 units</h4>
-                  <p className="text-sm text-muted-foreground">Design Studio Pro • $4,200</p>
+                  <p className="text-sm text-muted-foreground">Design Studio Pro • 4,200 KD</p>
                 </div>
                 <Badge variant="outline">Quote Sent</Badge>
               </div>
@@ -192,7 +192,7 @@ const B2BCorporate = () => {
                   <h4 className="font-semibold">Volume Discount Tier 1</h4>
                   <Badge variant="secondary">15% Off</Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">Orders above $10,000 • 8 accounts</p>
+                <p className="text-sm text-muted-foreground">Orders above 10,000 KD • 8 accounts</p>
               </div>
 
               <div className="p-3 border rounded-lg">
@@ -200,7 +200,7 @@ const B2BCorporate = () => {
                   <h4 className="font-semibold">Volume Discount Tier 2</h4>
                   <Badge variant="secondary">25% Off</Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">Orders above $50,000 • 3 accounts</p>
+                <p className="text-sm text-muted-foreground">Orders above 50,000 KD • 3 accounts</p>
               </div>
 
               <div className="p-3 border rounded-lg">
