@@ -71,7 +71,7 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-[#f1d8e9]">
         <SidebarGroup className="bg-fuchsia-200">
           <SidebarGroupLabel className="text-sidebar-foreground/70">Main Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
