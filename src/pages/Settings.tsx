@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search, Filter, Plus, Users, Shield, Lock, FileText, Database } from "lucide-react";
-import printoLogo from "@/assets/printo-logo.png";
 
 export default function Settings() {
   const users = [
@@ -198,17 +197,6 @@ export default function Settings() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Footer with Logo */}
-      <footer className="mt-12 border-t pt-6">
-        <div className="flex justify-center">
-          <img 
-            src={printoLogo} 
-            alt="Printo Logo" 
-            className="h-24 w-auto object-contain"
-          />
-        </div>
-      </footer>
     </div>
   );
 }
