@@ -6,7 +6,7 @@ const navigationItems = [{
   url: "/",
   icon: LayoutDashboard
 }, {
-  title: "Orders & Production",
+  title: "Orders",
   url: "/orders",
   icon: ShoppingCart
 }, {
@@ -14,7 +14,7 @@ const navigationItems = [{
   url: "/workstations",
   icon: MonitorCog
 }, {
-  title: "Fulfillment & Shipping",
+  title: "Delivery Drivers",
   url: "/fulfillment",
   icon: Truck
 }, {
