@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingCart, Truck, Boxes, Headphones, Receipt, BarChart3, Settings, Globe, MonitorCog, Users, Megaphone, Bot, Building2 } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Truck, Boxes, Headphones, Receipt, BarChart3, Settings, Globe, MonitorCog, Users, Megaphone, Bot, Building2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader } from "@/components/ui/sidebar";
 const navigationItems = [{
@@ -9,10 +9,6 @@ const navigationItems = [{
   title: "Orders & Production",
   url: "/orders",
   icon: ShoppingCart
-}, {
-  title: "Catalog & Templates",
-  url: "/catalog",
-  icon: Package
 }, {
   title: "Website CMS Console",
   url: "/cms",
