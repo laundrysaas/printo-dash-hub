@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Plus, Target, Ticket, MessageSquare, Mail } from "lucide-react";
+import { Search, Filter, Plus, Target, Ticket, MessageSquare, Mail, Store } from "lucide-react";
 
 export default function Marketing() {
   const campaigns = [
@@ -82,6 +82,10 @@ export default function Marketing() {
           <TabsTrigger value="templates" className="gap-2">
             <Mail className="h-4 w-4" />
             Templates
+          </TabsTrigger>
+          <TabsTrigger value="merchandising" className="gap-2">
+            <Store className="h-4 w-4" />
+            Merchandising
           </TabsTrigger>
         </TabsList>
 
@@ -171,6 +175,98 @@ export default function Marketing() {
               <p className="text-muted-foreground">Marketing templates and email designs will appear here.</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="merchandising" className="space-y-4">
+          {/* Merchandising Actions */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search products, banners..."
+                className="pl-9"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" />
+                Filters
+              </Button>
+              <Button size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Content
+              </Button>
+            </div>
+          </div>
+
+          {/* Merchandising Cards */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Homepage Banners</h3>
+                <p className="text-sm text-muted-foreground mb-4">Manage rotating banners and hero images</p>
+                <div className="flex items-center justify-between">
+                  <Badge>4 Active</Badge>
+                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Featured Products</h3>
+                <p className="text-sm text-muted-foreground mb-4">Highlight products on homepage</p>
+                <div className="flex items-center justify-between">
+                  <Badge>12 Products</Badge>
+                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Product Collections</h3>
+                <p className="text-sm text-muted-foreground mb-4">Curate themed product collections</p>
+                <div className="flex items-center justify-between">
+                  <Badge>8 Collections</Badge>
+                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Promotional Sections</h3>
+                <p className="text-sm text-muted-foreground mb-4">Special offer sections and CTAs</p>
+                <div className="flex items-center justify-between">
+                  <Badge>6 Active</Badge>
+                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Category Displays</h3>
+                <p className="text-sm text-muted-foreground mb-4">Control category page layouts</p>
+                <div className="flex items-center justify-between">
+                  <Badge>15 Categories</Badge>
+                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Social Proof</h3>
+                <p className="text-sm text-muted-foreground mb-4">Testimonials and reviews display</p>
+                <div className="flex items-center justify-between">
+                  <Badge>28 Reviews</Badge>
+                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
