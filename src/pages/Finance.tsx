@@ -71,8 +71,6 @@ export default function Finance() {
         <TabsList>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
-          <TabsTrigger value="petty-cash">Petty Cash</TabsTrigger>
-          <TabsTrigger value="settlements">Settlements</TabsTrigger>
           <TabsTrigger value="refunds">Refunds</TabsTrigger>
         </TabsList>
 
@@ -117,22 +115,6 @@ export default function Finance() {
           <Card>
             <CardContent className="p-6">
               <p className="text-muted-foreground">Payment records and transaction history will appear here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="petty-cash">
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground">Petty cash management and expenses will appear here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="settlements">
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground">Settlement records and reconciliation will appear here.</p>
             </CardContent>
           </Card>
         </TabsContent>
