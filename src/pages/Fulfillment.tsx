@@ -42,7 +42,7 @@ const Fulfillment = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Fulfillment & Shipping</h1>
+        <h1 className="text-3xl font-bold">Delivery Drivers</h1>
         <p className="text-muted-foreground">First/last-mile handoff with proof of delivery</p>
       </div>
 
