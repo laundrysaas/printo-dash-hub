@@ -85,7 +85,6 @@ export default function Finance() {
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead>Due Date</TableHead>
                     <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -97,7 +96,6 @@ export default function Finance() {
                       <TableCell className="font-medium">{invoice.amount}</TableCell>
                       <TableCell>{getStatusBadge(invoice.status)}</TableCell>
                       <TableCell>{invoice.date}</TableCell>
-                      <TableCell>{invoice.dueDate}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="outline" size="sm">
                           View
