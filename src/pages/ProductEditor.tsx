@@ -36,6 +36,7 @@ interface Product {
   description: string;
   isVisible: boolean;
   isOutOfStock: boolean;
+  stockQuantity: number;
 }
 
 const initialProducts: Product[] = [
@@ -49,6 +50,7 @@ const initialProducts: Product[] = [
     description: "High-quality business cards with matte finish. Available in multiple sizes and paper weights.",
     isVisible: true,
     isOutOfStock: false,
+    stockQuantity: 150,
   },
   {
     id: "2",
@@ -60,6 +62,7 @@ const initialProducts: Product[] = [
     description: "Vibrant A4 flyers perfect for promotions and events. Full color printing on glossy paper.",
     isVisible: true,
     isOutOfStock: false,
+    stockQuantity: 200,
   },
   {
     id: "3",
@@ -71,6 +74,7 @@ const initialProducts: Product[] = [
     description: "Eye-catching large format posters for maximum visibility. Available in various sizes.",
     isVisible: false,
     isOutOfStock: true,
+    stockQuantity: 0,
   },
   {
     id: "4",
@@ -82,6 +86,7 @@ const initialProducts: Product[] = [
     description: "Professional tri-fold brochures with premium paper quality. Perfect for marketing materials.",
     isVisible: true,
     isOutOfStock: false,
+    stockQuantity: 75,
   },
   {
     id: "5",
@@ -93,6 +98,7 @@ const initialProducts: Product[] = [
     description: "Die-cut custom stickers with durable vinyl material. Waterproof and UV resistant.",
     isVisible: true,
     isOutOfStock: true,
+    stockQuantity: 0,
   },
   {
     id: "6",
@@ -104,6 +110,7 @@ const initialProducts: Product[] = [
     description: "Heavy-duty vinyl banners for outdoor use. Includes grommets for easy hanging.",
     isVisible: true,
     isOutOfStock: false,
+    stockQuantity: 50,
   },
 ];
 
@@ -160,6 +167,7 @@ const ProductEditor = () => {
       description: "",
       isVisible: true,
       isOutOfStock: false,
+      stockQuantity: 0,
     });
     setIsNewProduct(true);
     setIsDialogOpen(true);
@@ -283,6 +291,7 @@ const ProductEditor = () => {
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead className="text-right">Price</TableHead>
+                <TableHead className="text-center">Stock Qty</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-center">Visibility</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -307,6 +316,9 @@ const ProductEditor = () => {
                   </TableCell>
                   <TableCell className="text-right font-semibold">
                     {product.price.toFixed(2)} KD
+                  </TableCell>
+                  <TableCell className="text-center font-medium">
+                    {product.stockQuantity}
                   </TableCell>
                   <TableCell className="text-center">
                     {product.isOutOfStock ? (
@@ -490,19 +502,36 @@ const ProductEditor = () => {
               </div>
 
               {/* Price */}
-              <div className="space-y-2">
-                <Label htmlFor="price">Price (KD)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={editingProduct.price}
-                  onChange={(e) =>
-                    setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })
-                  }
-                  placeholder="0.00"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="price">Price (KD)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={editingProduct.price}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })
+                    }
+                    placeholder="0.00"
+                  />
+                </div>
+
+                {/* Stock Quantity */}
+                <div className="space-y-2">
+                  <Label htmlFor="stockQuantity">Stock Quantity</Label>
+                  <Input
+                    id="stockQuantity"
+                    type="number"
+                    min="0"
+                    value={editingProduct.stockQuantity}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, stockQuantity: parseInt(e.target.value) || 0 })
+                    }
+                    placeholder="0"
+                  />
+                </div>
               </div>
 
               {/* Description */}
