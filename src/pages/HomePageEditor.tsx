@@ -21,7 +21,8 @@ import {
   ShoppingBag,
   Printer,
   Phone,
-  Mail
+  Mail,
+  Plus
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -67,9 +68,15 @@ const HomePageEditor = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
+  const [addProductDialogOpen, setAddProductDialogOpen] = useState(false);
   const [editServiceDialogOpen, setEditServiceDialogOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState<PageSection | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+  const [newProduct, setNewProduct] = useState<Omit<ProductItem, 'id' | 'isActive'>>({
+    name: "",
+    subtitle: "",
+    imageUrl: "",
+  });
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
 
   // Hero Section - PRINTO Collection
@@ -210,6 +217,23 @@ const HomePageEditor = () => {
   const handleToggleProduct = (productId: string) => {
     setProducts(prev => prev.map(p => p.id === productId ? { ...p, isActive: !p.isActive } : p));
     setHasChanges(true);
+  };
+
+  const handleAddProduct = () => {
+    if (!newProduct.name) {
+      toast.error("Please enter a product name");
+      return;
+    }
+    const product: ProductItem = {
+      id: `prod-${Date.now()}`,
+      ...newProduct,
+      isActive: true,
+    };
+    setProducts(prev => [...prev, product]);
+    setNewProduct({ name: "", subtitle: "", imageUrl: "" });
+    setAddProductDialogOpen(false);
+    setHasChanges(true);
+    toast.success("Product added successfully");
   };
 
   const handleToggleService = (serviceId: string) => {
@@ -358,9 +382,15 @@ const HomePageEditor = () => {
 
         {/* Products Tab */}
         <TabsContent value="products" className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold">Our Custom Design Products</h2>
-            <p className="text-muted-foreground">Manage the products displayed in the products grid</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">Our Custom Design Products</h2>
+              <p className="text-muted-foreground">Manage the products displayed in the products grid</p>
+            </div>
+            <Button onClick={() => setAddProductDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Product
+            </Button>
           </div>
           
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -581,6 +611,51 @@ const HomePageEditor = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleUpdateSection}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Product Dialog */}
+      <Dialog open={addProductDialogOpen} onOpenChange={setAddProductDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Product</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="space-y-4">
+              <Label>Product Image</Label>
+              <div className="aspect-square bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/20">
+                <div className="text-center p-4">
+                  <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                  <p className="text-sm text-muted-foreground">Click to upload</p>
+                </div>
+              </div>
+              <Input 
+                placeholder="Or enter image URL"
+                value={newProduct.imageUrl}
+                onChange={(e) => setNewProduct({ ...newProduct, imageUrl: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Product Name</Label>
+              <Input 
+                value={newProduct.name}
+                onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Subtitle / Description</Label>
+              <Input 
+                value={newProduct.subtitle}
+                onChange={(e) => setNewProduct({ ...newProduct, subtitle: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddProductDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddProduct}>Add Product</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
