@@ -70,6 +70,7 @@ const HomePageEditor = () => {
   const [editProductDialogOpen, setEditProductDialogOpen] = useState(false);
   const [addProductDialogOpen, setAddProductDialogOpen] = useState(false);
   const [editServiceDialogOpen, setEditServiceDialogOpen] = useState(false);
+  const [addServiceDialogOpen, setAddServiceDialogOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState<PageSection | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
   const [newProduct, setNewProduct] = useState<Omit<ProductItem, 'id' | 'isActive'>>({
@@ -78,6 +79,11 @@ const HomePageEditor = () => {
     imageUrl: "",
   });
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [newService, setNewService] = useState<Omit<ServiceItem, 'id' | 'isActive'>>({
+    name: "",
+    description: "",
+    icon: "file",
+  });
 
   // Hero Section - PRINTO Collection
   const [heroSection, setHeroSection] = useState<PageSection>({
@@ -239,6 +245,23 @@ const HomePageEditor = () => {
   const handleToggleService = (serviceId: string) => {
     setServices(prev => prev.map(s => s.id === serviceId ? { ...s, isActive: !s.isActive } : s));
     setHasChanges(true);
+  };
+
+  const handleAddService = () => {
+    if (!newService.name) {
+      toast.error("Please enter a service name");
+      return;
+    }
+    const service: ServiceItem = {
+      id: `serv-${Date.now()}`,
+      ...newService,
+      isActive: true,
+    };
+    setServices(prev => [...prev, service]);
+    setNewService({ name: "", description: "", icon: "file" });
+    setAddServiceDialogOpen(false);
+    setHasChanges(true);
+    toast.success("Service added successfully");
   };
 
   const renderSectionCard = (section: PageSection, setter: React.Dispatch<React.SetStateAction<PageSection>>) => (
@@ -422,9 +445,15 @@ const HomePageEditor = () => {
 
         {/* Services Tab */}
         <TabsContent value="services" className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold">Our Printing Services</h2>
-            <p className="text-muted-foreground">Manage the services displayed in the services section</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">Our Printing Services</h2>
+              <p className="text-muted-foreground">Manage the services displayed in the services section</p>
+            </div>
+            <Button onClick={() => setAddServiceDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Service
+            </Button>
           </div>
           
           <div className="grid gap-4 sm:grid-cols-2">
@@ -703,6 +732,46 @@ const HomePageEditor = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditProductDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleUpdateProduct}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Service Dialog */}
+      <Dialog open={addServiceDialogOpen} onOpenChange={setAddServiceDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Service</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="space-y-2">
+              <Label>Service Name</Label>
+              <Input 
+                value={newService.name}
+                onChange={(e) => setNewService({ ...newService, name: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea 
+                value={newService.description}
+                onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Icon</Label>
+              <Input 
+                value={newService.icon}
+                onChange={(e) => setNewService({ ...newService, icon: e.target.value })}
+                placeholder="e.g., sticker, file, book"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddServiceDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddService}>Add Service</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
