@@ -60,8 +60,8 @@ const navigationItems = [{
 }];
 export function AppSidebar() {
   return <Sidebar>
-      <SidebarHeader className="border-b border-sidebar-border p-4 bg-[#f1d8e9]">
-        <div className="flex items-center gap-2 bg-fuchsia-200">
+      <SidebarHeader className="border-b border-sidebar-border p-4 bg-info">
+        <div className="flex items-center gap-2 bg-info">
           <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
             <span className="text-sidebar-primary-foreground font-bold text-sm">P</span>
           </div>
@@ -71,7 +71,7 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="bg-[#f1d8e9]">
+      <SidebarContent className="bg-info">
         <SidebarGroup className="bg-info">
           <SidebarGroupLabel className="text-sidebar-foreground/70">Main Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
