@@ -198,10 +198,6 @@ export default function Marketing() {
   });
 
   const handleAddCampaign = () => {
-    if (!newCampaign.name) {
-      toast.error("Please enter a campaign name");
-      return;
-    }
     if (!startDate || !endDate) {
       toast.error("Please select start and end dates");
       return;
@@ -209,7 +205,7 @@ export default function Marketing() {
     
     const campaign: Campaign = {
       id: `CAMP-${String(campaigns.length + 1).padStart(3, '0')}`,
-      name: newCampaign.name,
+      name: `${newCampaign.type} Campaign`,
       type: newCampaign.type,
       status: newCampaign.status,
       startDate: format(startDate, "yyyy-MM-dd"),
@@ -430,16 +426,6 @@ export default function Marketing() {
           </DialogHeader>
           
           <div className="space-y-6 py-4">
-            {/* Campaign Name */}
-            <div className="space-y-2">
-              <Label>Campaign Name *</Label>
-              <Input 
-                placeholder="e.g., Summer Sale 2024"
-                value={newCampaign.name}
-                onChange={(e) => setNewCampaign({ ...newCampaign, name: e.target.value })}
-              />
-            </div>
-
             {/* Type and Status */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
