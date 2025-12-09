@@ -40,24 +40,8 @@ export default function SmartReports() {
       description: "Track revenue trends and performance",
     },
     {
-      title: "Item Mix",
-      description: "Analyze service distribution and popularity",
-    },
-    {
       title: "Profitability",
       description: "Monitor profit margins and cost analysis",
-    },
-    {
-      title: "Benchmarks",
-      description: "Compare performance against industry standards",
-    },
-    {
-      title: "Saved View: Week",
-      description: "Weekly performance overview",
-    },
-    {
-      title: "Saved View: SLA",
-      description: "Service level agreement tracking",
     },
   ];
 
@@ -183,9 +167,6 @@ export default function SmartReports() {
 
       <div className="flex gap-3 pt-4">
         <Button size="lg">Save View</Button>
-        <Button variant="outline" size="lg">
-          Schedule
-        </Button>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
