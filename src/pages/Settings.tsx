@@ -16,6 +16,7 @@ export default function Settings() {
   const [inviteForm, setInviteForm] = useState({
     name: "",
     email: "",
+    mobile: "",
     role: "",
     branch: "",
   });
@@ -104,9 +105,9 @@ export default function Settings() {
       toast.error("Please fill in all fields");
       return;
     }
-    toast.success(`Invitation sent to ${inviteForm.email}`);
+    toast.success(`User ${inviteForm.name} added successfully`);
     setInviteDialogOpen(false);
-    setInviteForm({ name: "", email: "", role: "", branch: "" });
+    setInviteForm({ name: "", email: "", mobile: "", role: "", branch: "" });
   };
 
   return (
@@ -227,6 +228,16 @@ export default function Settings() {
                 placeholder="Enter email address"
                 value={inviteForm.email}
                 onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="mobile">Mobile</Label>
+              <Input
+                id="mobile"
+                type="tel"
+                placeholder="Enter mobile number"
+                value={inviteForm.mobile}
+                onChange={(e) => setInviteForm({ ...inviteForm, mobile: e.target.value })}
               />
             </div>
             <div className="space-y-2">
