@@ -298,7 +298,7 @@ const ProductEditor = () => {
                     <Badge variant="secondary">{product.category}</Badge>
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    ${product.price.toFixed(2)}
+                    {product.price.toFixed(2)} KD
                   </TableCell>
                   <TableCell className="text-center">
                     {product.isOutOfStock ? (
@@ -442,7 +442,7 @@ const ProductEditor = () => {
 
               {/* Price */}
               <div className="space-y-2">
-                <Label htmlFor="price">Price ($)</Label>
+                <Label htmlFor="price">Price (KD)</Label>
                 <Input
                   id="price"
                   type="number"
