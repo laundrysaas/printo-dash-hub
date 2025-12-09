@@ -128,41 +128,6 @@ const CMS = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Blog & Articles</CardTitle>
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-1" />
-                    New Post
-                  </Button>
-                </div>
-                <CardDescription>Manage blog content and articles</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-semibold">Top 10 Printing Tips</h4>
-                      <p className="text-sm text-muted-foreground">Published 3 days ago</p>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-semibold">Business Card Design Guide</h4>
-                      <p className="text-sm text-muted-foreground">Draft</p>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
                   <CardTitle>Help Center</CardTitle>
                   <Button size="sm">
                     <Plus className="h-4 w-4 mr-1" />
@@ -204,39 +169,6 @@ const CMS = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Policy Pages</CardTitle>
-                  <Button size="sm" variant="outline">
-                    <Edit className="h-4 w-4 mr-1" />
-                    Manage
-                  </Button>
-                </div>
-                <CardDescription>Legal and policy documentation</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 rounded hover:bg-muted/50">
-                    <span className="text-sm">Privacy Policy</span>
-                    <Badge variant="secondary">Live</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded hover:bg-muted/50">
-                    <span className="text-sm">Terms & Conditions</span>
-                    <Badge variant="secondary">Live</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded hover:bg-muted/50">
-                    <span className="text-sm">Return Policy</span>
-                    <Badge variant="secondary">Live</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded hover:bg-muted/50">
-                    <span className="text-sm">Shipping Information</span>
-                    <Badge variant="secondary">Live</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
                   <CardTitle>
                     <div className="flex items-center gap-2">
                       <Languages className="h-5 w-5" />
@@ -269,33 +201,6 @@ const CMS = () => {
               </CardContent>
             </Card>
           </div>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Image className="h-5 w-5" />
-                    Media Library
-                  </div>
-                </CardTitle>
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-1" />
-                  Upload Media
-                </Button>
-              </div>
-              <CardDescription>Images, videos, and documents</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <div key={i} className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                    <Image className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
 
