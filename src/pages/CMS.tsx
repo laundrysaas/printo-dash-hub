@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,6 +23,8 @@ import {
 } from "lucide-react";
 
 const CMS = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -84,7 +87,7 @@ const CMS = () => {
                   Last updated: 1 day ago
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => navigate("/cms/products")}>
                     <Edit className="h-4 w-4 mr-1" />
                     Edit
                   </Button>
