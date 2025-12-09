@@ -1,15 +1,36 @@
 import { useState } from "react";
+import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Plus, Target, MessageSquare, Store, Edit, Megaphone, Tag, Mail } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Search, Plus, Target, Tag, Mail, CalendarIcon } from "lucide-react";
+import { toast } from "sonner";
+
+interface Campaign {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  usedCoupons: number;
+  description?: string;
+  couponCode?: string;
+  discountValue?: string;
+}
 
 export default function Marketing() {
-  const campaigns = [
+  const [campaigns, setCampaigns] = useState<Campaign[]>([
     {
       id: "CAMP-001",
       name: "Summer Discount Campaign",
@@ -46,14 +67,63 @@ export default function Marketing() {
       endDate: "2024-05-31",
       usedCoupons: 0,
     },
-  ];
+  ]);
 
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [addCampaignOpen, setAddCampaignOpen] = useState(false);
+  const [newCampaign, setNewCampaign] = useState({
+    name: "",
+    type: "Promotional",
+    status: "Draft",
+    description: "",
+    couponCode: "",
+    discountValue: "",
+  });
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
 
   const filteredCampaigns = campaigns.filter(campaign => {
     if (statusFilter === "all") return true;
     return campaign.status === statusFilter;
   });
+
+  const handleAddCampaign = () => {
+    if (!newCampaign.name) {
+      toast.error("Please enter a campaign name");
+      return;
+    }
+    if (!startDate || !endDate) {
+      toast.error("Please select start and end dates");
+      return;
+    }
+    
+    const campaign: Campaign = {
+      id: `CAMP-${String(campaigns.length + 1).padStart(3, '0')}`,
+      name: newCampaign.name,
+      type: newCampaign.type,
+      status: newCampaign.status,
+      startDate: format(startDate, "yyyy-MM-dd"),
+      endDate: format(endDate, "yyyy-MM-dd"),
+      usedCoupons: 0,
+      description: newCampaign.description,
+      couponCode: newCampaign.couponCode,
+      discountValue: newCampaign.discountValue,
+    };
+    
+    setCampaigns(prev => [...prev, campaign]);
+    setNewCampaign({
+      name: "",
+      type: "Promotional",
+      status: "Draft",
+      description: "",
+      couponCode: "",
+      discountValue: "",
+    });
+    setStartDate(undefined);
+    setEndDate(undefined);
+    setAddCampaignOpen(false);
+    toast.success("Campaign created successfully");
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -111,7 +181,7 @@ export default function Marketing() {
                   <SelectItem value="Draft">Draft</SelectItem>
                 </SelectContent>
               </Select>
-              <Button size="sm">
+              <Button size="sm" onClick={() => setAddCampaignOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 New Campaign
               </Button>
@@ -231,6 +301,169 @@ export default function Marketing() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Add Campaign Dialog */}
+      <Dialog open={addCampaignOpen} onOpenChange={setAddCampaignOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Campaign</DialogTitle>
+            <DialogDescription>Set up a new marketing campaign with discount codes and scheduling</DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Campaign Name */}
+            <div className="space-y-2">
+              <Label>Campaign Name *</Label>
+              <Input 
+                placeholder="e.g., Summer Sale 2024"
+                value={newCampaign.name}
+                onChange={(e) => setNewCampaign({ ...newCampaign, name: e.target.value })}
+              />
+            </div>
+
+            {/* Type and Status */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Campaign Type</Label>
+                <Select 
+                  value={newCampaign.type} 
+                  onValueChange={(value) => setNewCampaign({ ...newCampaign, type: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Promotional">Promotional</SelectItem>
+                    <SelectItem value="Onboarding">Onboarding</SelectItem>
+                    <SelectItem value="Retention">Retention</SelectItem>
+                    <SelectItem value="Seasonal">Seasonal</SelectItem>
+                    <SelectItem value="Flash Sale">Flash Sale</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select 
+                  value={newCampaign.status} 
+                  onValueChange={(value) => setNewCampaign({ ...newCampaign, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Draft">Draft</SelectItem>
+                    <SelectItem value="Scheduled">Scheduled</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Duration */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Start Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "PPP") : "Select start date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={setStartDate}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <Label>End Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !endDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {endDate ? format(endDate, "PPP") : "Select end date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={setEndDate}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
+            {/* Coupon Details */}
+            <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+              <h4 className="font-semibold flex items-center gap-2">
+                <Tag className="h-4 w-4" />
+                Coupon Details
+              </h4>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Coupon Code</Label>
+                  <Input 
+                    placeholder="e.g., SUMMER20"
+                    value={newCampaign.couponCode}
+                    onChange={(e) => setNewCampaign({ ...newCampaign, couponCode: e.target.value.toUpperCase() })}
+                    className="font-mono uppercase"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Discount Value</Label>
+                  <Input 
+                    placeholder="e.g., 20% or 5 KD"
+                    value={newCampaign.discountValue}
+                    onChange={(e) => setNewCampaign({ ...newCampaign, discountValue: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label>Campaign Description</Label>
+              <Textarea 
+                placeholder="Describe your campaign objectives and target audience..."
+                value={newCampaign.description}
+                onChange={(e) => setNewCampaign({ ...newCampaign, description: e.target.value })}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddCampaignOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddCampaign}>
+              Create Campaign
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
