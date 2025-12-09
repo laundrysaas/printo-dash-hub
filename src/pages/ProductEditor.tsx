@@ -288,7 +288,6 @@ const ProductEditor = () => {
               <TableRow>
                 <TableHead className="w-[80px]">Image</TableHead>
                 <TableHead>Item Code</TableHead>
-                <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead className="text-right">Price</TableHead>
                 <TableHead className="text-center">Stock Qty</TableHead>
@@ -310,7 +309,6 @@ const ProductEditor = () => {
                     </div>
                   </TableCell>
                   <TableCell className="font-mono text-sm">{product.itemCode}</TableCell>
-                  <TableCell className="font-medium">{product.title}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">{product.category}</Badge>
                   </TableCell>
