@@ -110,7 +110,6 @@ export default function Marketing() {
                     <TableHead>Status</TableHead>
                     <TableHead>Duration</TableHead>
                     <TableHead>Used Coupons</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -126,11 +125,6 @@ export default function Marketing() {
                       <TableCell>{getStatusBadge(campaign.status)}</TableCell>
                       <TableCell className="text-sm">{campaign.duration}</TableCell>
                       <TableCell className="font-medium">{campaign.usedCoupons.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="default" size="sm" className="bg-foreground text-background hover:bg-foreground/90">
-                          View
-                        </Button>
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
