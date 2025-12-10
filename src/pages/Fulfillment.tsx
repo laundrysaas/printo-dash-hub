@@ -57,7 +57,7 @@ const Fulfillment = () => {
                 <TableHead>Driver</TableHead>
                 <TableHead>Stops</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>COD Total</TableHead>
+                <TableHead>Invoice Amount</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
