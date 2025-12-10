@@ -1,7 +1,15 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Monitor, Activity, Clock, User } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const workstations = [
   {
@@ -58,6 +66,15 @@ const getStatusColor = (status: string) => {
 };
 
 const Workstations = () => {
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [yearFilter, setYearFilter] = useState("all");
+
+  const filteredWorkstations = workstations.filter((station) => {
+    const matchesStatus = statusFilter === "all" || station.status === statusFilter;
+    const matchesYear = yearFilter === "all" || station.dateOfPurchase.startsWith(yearFilter);
+    return matchesStatus && matchesYear;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -117,8 +134,34 @@ const Workstations = () => {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Workstation Status</CardTitle>
+        <CardHeader className="border-b">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <CardTitle>Workstation Status</CardTitle>
+            <div className="flex gap-2">
+              <Select value={yearFilter} onValueChange={setYearFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Date of Purchase" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Years</SelectItem>
+                  <SelectItem value="2023">2023</SelectItem>
+                  <SelectItem value="2022">2022</SelectItem>
+                  <SelectItem value="2021">2021</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Not Active">Not Active</SelectItem>
+                  <SelectItem value="Maintenance">Maintenance</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -133,7 +176,7 @@ const Workstations = () => {
                 </tr>
               </thead>
               <tbody>
-                {workstations.map((station) => (
+                {filteredWorkstations.map((station) => (
                   <tr key={station.id} className="border-b hover:bg-muted/30 transition-colors">
                     <td className="p-4 font-medium">{station.id}</td>
                     <td className="p-4">{station.type}</td>
@@ -146,6 +189,13 @@ const Workstations = () => {
                     <td className="p-4">{station.location}</td>
                   </tr>
                 ))}
+                {filteredWorkstations.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-muted-foreground">
+                      No workstations found matching the filters
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
