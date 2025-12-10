@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { Search, Plus, Target, Tag, Mail, CalendarIcon, Percent, Sparkles, Copy, Gift, Users, ShoppingCart } from "lucide-react";
+import { Search, Plus, Target, Tag, Mail, CalendarIcon, Percent, Sparkles, Copy, Gift, Users, ShoppingCart, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Coupon {
@@ -115,7 +115,9 @@ export default function Marketing() {
 
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [addCampaignOpen, setAddCampaignOpen] = useState(false);
+  const [editCampaignOpen, setEditCampaignOpen] = useState(false);
   const [addCouponOpen, setAddCouponOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [campaignTypes, setCampaignTypes] = useState([
     "Christmas", "New Year's Day", "Kuwait National Day", "Isra' and Mi'raj",
     "Ramadan", "Eid al-Fitr", "Eid al-Adha", "Valentine's Day",
@@ -142,6 +144,8 @@ export default function Marketing() {
   });
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [editStartDate, setEditStartDate] = useState<Date>();
+  const [editEndDate, setEditEndDate] = useState<Date>();
   const [couponStartDate, setCouponStartDate] = useState<Date>();
   const [couponEndDate, setCouponEndDate] = useState<Date>();
 
@@ -238,6 +242,37 @@ export default function Marketing() {
     toast.success("Campaign created successfully");
   };
 
+  const handleEditCampaign = (campaign: Campaign) => {
+    setSelectedCampaign({ ...campaign });
+    setEditStartDate(new Date(campaign.startDate));
+    setEditEndDate(new Date(campaign.endDate));
+    setEditCampaignOpen(true);
+  };
+
+  const handleUpdateCampaign = () => {
+    if (!selectedCampaign) return;
+    if (!editStartDate || !editEndDate) {
+      toast.error("Please select start and end dates");
+      return;
+    }
+    
+    const updatedCampaign = {
+      ...selectedCampaign,
+      startDate: format(editStartDate, "yyyy-MM-dd"),
+      endDate: format(editEndDate, "yyyy-MM-dd"),
+    };
+    
+    setCampaigns(prev => prev.map(c => c.id === selectedCampaign.id ? updatedCampaign : c));
+    setEditCampaignOpen(false);
+    setSelectedCampaign(null);
+    toast.success("Campaign updated successfully");
+  };
+
+  const handleDeleteCampaign = (campaignId: string) => {
+    setCampaigns(prev => prev.filter(c => c.id !== campaignId));
+    toast.success("Campaign deleted");
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Active":
@@ -312,10 +347,11 @@ export default function Marketing() {
                     <TableHead>Status</TableHead>
                     <TableHead>Duration</TableHead>
                     <TableHead>Used Coupons</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredCampaigns.map((campaign) => (
+                {filteredCampaigns.map((campaign) => (
                     <TableRow key={campaign.id}>
                       <TableCell>
                         <div className="space-y-1">
@@ -332,6 +368,16 @@ export default function Marketing() {
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">{campaign.usedCoupons.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => handleEditCampaign(campaign)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteCampaign(campaign.id)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -616,6 +662,133 @@ export default function Marketing() {
             </Button>
             <Button onClick={handleAddCampaign}>
               Create Campaign
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Campaign Dialog */}
+      <Dialog open={editCampaignOpen} onOpenChange={setEditCampaignOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Campaign</DialogTitle>
+            <DialogDescription>Modify your marketing campaign settings</DialogDescription>
+          </DialogHeader>
+          
+          {selectedCampaign && (
+            <div className="space-y-6 py-4">
+              {/* Type and Status */}
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Campaign Type</Label>
+                  <Select 
+                    value={selectedCampaign.type} 
+                    onValueChange={(value) => setSelectedCampaign({ ...selectedCampaign, type: value, name: `${value} Campaign` })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {campaignTypes.map((type) => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <Select 
+                    value={selectedCampaign.status} 
+                    onValueChange={(value) => setSelectedCampaign({ ...selectedCampaign, status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Draft">Draft</SelectItem>
+                      <SelectItem value="Scheduled">Scheduled</SelectItem>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Expired">Expired</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Duration */}
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Start Date *</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !editStartDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {editStartDate ? format(editStartDate, "PPP") : "Select start date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={editStartDate}
+                        onSelect={setEditStartDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-2">
+                  <Label>End Date *</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !editEndDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {editEndDate ? format(editEndDate, "PPP") : "Select end date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={editEndDate}
+                        onSelect={setEditEndDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Textarea 
+                  placeholder="Campaign description..."
+                  value={selectedCampaign.description || ""}
+                  onChange={(e) => setSelectedCampaign({ ...selectedCampaign, description: e.target.value })}
+                  rows={3}
+                />
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCampaignOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateCampaign}>
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>
