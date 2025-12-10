@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, FileSpreadsheet, Calendar as CalendarIcon, X, Settings, Key, Check } from "lucide-react";
+import { Upload, FileSpreadsheet, Calendar as CalendarIcon, X, Settings, Key, Check, MessageSquare, Edit2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -47,6 +47,9 @@ export default function SmartReports() {
     openai: false,
     google: false,
   });
+  const [systemPrompt, setSystemPrompt] = useState("");
+  const [savedSystemPrompt, setSavedSystemPrompt] = useState("");
+  const [promptDialogOpen, setPromptDialogOpen] = useState(false);
 
   const reports = [
     {
@@ -149,6 +152,23 @@ export default function SmartReports() {
     toast.success(`${provider === "openai" ? "OpenAI" : "Google"} API key removed`);
   };
 
+  const handleSaveSystemPrompt = () => {
+    setSavedSystemPrompt(systemPrompt.trim());
+    toast.success("System prompt saved successfully");
+    setPromptDialogOpen(false);
+  };
+
+  const handleEditSystemPrompt = () => {
+    setSystemPrompt(savedSystemPrompt);
+    setPromptDialogOpen(true);
+  };
+
+  const handleRemoveSystemPrompt = () => {
+    setSavedSystemPrompt("");
+    setSystemPrompt("");
+    toast.success("System prompt removed");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -243,6 +263,56 @@ export default function SmartReports() {
                 </Button>
               )}
             </div>
+          </div>
+
+          {/* System Prompt Section */}
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">System Prompt</span>
+                {savedSystemPrompt && (
+                  <div className="h-2 w-2 rounded-full bg-green-500" />
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {savedSystemPrompt ? (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-xs"
+                      onClick={handleEditSystemPrompt}
+                    >
+                      <Edit2 className="h-3 w-3 mr-1" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-xs"
+                      onClick={handleRemoveSystemPrompt}
+                    >
+                      Remove
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 px-2 text-xs"
+                    onClick={() => setPromptDialogOpen(true)}
+                  >
+                    Add Prompt
+                  </Button>
+                )}
+              </div>
+            </div>
+            {savedSystemPrompt && (
+              <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
+                {savedSystemPrompt}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -405,6 +475,42 @@ export default function SmartReports() {
               Cancel
             </Button>
             <Button onClick={handleSaveApiKey}>Save API Key</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* System Prompt Dialog */}
+      <Dialog open={promptDialogOpen} onOpenChange={setPromptDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{savedSystemPrompt ? "Edit System Prompt" : "Add System Prompt"}</DialogTitle>
+            <DialogDescription>
+              Define how the AI should analyze and interpret your reports.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="systemPrompt">System Prompt</Label>
+              <textarea
+                id="systemPrompt"
+                value={systemPrompt}
+                onChange={(e) => setSystemPrompt(e.target.value)}
+                placeholder="e.g., You are a financial analyst. Analyze the data and provide insights on revenue trends, cost optimization opportunities, and key performance indicators..."
+                className="w-full min-h-[150px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+              <p className="text-xs text-muted-foreground">
+                This prompt will guide the AI's behavior when analyzing your spreadsheets and reports.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setPromptDialogOpen(false);
+              setSystemPrompt(savedSystemPrompt);
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveSystemPrompt}>Save Prompt</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
