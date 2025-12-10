@@ -11,6 +11,8 @@ import CMS from "./pages/CMS";
 import ProductEditor from "./pages/ProductEditor";
 import PrintingServices from "./pages/PrintingServices";
 import HomePageEditor from "./pages/HomePageEditor";
+import HelpCenter from "./pages/HelpCenter";
+import MultilingualContent from "./pages/MultilingualContent";
 import Workstations from "./pages/Workstations";
 import Fulfillment from "./pages/Fulfillment";
 import Customers from "./pages/Customers";
@@ -43,6 +45,8 @@ const App = () => (
           <Route path="/cms/products" element={<AppLayout><ProductEditor /></AppLayout>} />
           <Route path="/cms/printing-services" element={<AppLayout><PrintingServices /></AppLayout>} />
           <Route path="/cms/home-page" element={<AppLayout><HomePageEditor /></AppLayout>} />
+          <Route path="/cms/help-center" element={<AppLayout><HelpCenter /></AppLayout>} />
+          <Route path="/cms/multilingual" element={<AppLayout><MultilingualContent /></AppLayout>} />
           <Route path="/workstations" element={<AppLayout><Workstations /></AppLayout>} />
           <Route path="/fulfillment" element={<AppLayout><Fulfillment /></AppLayout>} />
           <Route path="/inventory" element={<AppLayout><Inventory /></AppLayout>} />

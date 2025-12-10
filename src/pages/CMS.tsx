@@ -125,11 +125,11 @@ const CMS = () => {
               5 articles published
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => navigate("/cms/help-center")}>
                 <Edit className="h-4 w-4 mr-1" />
                 Manage
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => navigate("/cms/help-center")}>
                 <Plus className="h-4 w-4 mr-1" />
                 New Article
               </Button>
@@ -151,11 +151,11 @@ const CMS = () => {
               Arabic: 85% translated
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => navigate("/cms/multilingual")}>
                 <Edit className="h-4 w-4 mr-1" />
                 Manage
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => navigate("/cms/multilingual")}>
                 Settings
               </Button>
             </div>
