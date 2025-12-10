@@ -69,6 +69,12 @@ const accountManagers = [
 const B2BCorporate = () => {
   const [newOrderOpen, setNewOrderOpen] = useState(false);
   const [addAccountOpen, setAddAccountOpen] = useState(false);
+  const [customIndustries, setCustomIndustries] = useState<string[]>([]);
+  const [customManagers, setCustomManagers] = useState<string[]>([]);
+  const [showCustomIndustryInput, setShowCustomIndustryInput] = useState(false);
+  const [showCustomManagerInput, setShowCustomManagerInput] = useState(false);
+  const [customIndustryValue, setCustomIndustryValue] = useState("");
+  const [customManagerValue, setCustomManagerValue] = useState("");
   const [corporateAccounts, setCorporateAccounts] = useState<CorporateAccount[]>([
     {
       id: "CA-001",
@@ -275,21 +281,67 @@ const B2BCorporate = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label>Industry</Label>
-                    <Select
-                      value={newAccount.industry}
-                      onValueChange={(value) => setNewAccount({ ...newAccount, industry: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select industry" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {industries.map((industry) => (
-                          <SelectItem key={industry} value={industry}>
-                            {industry}
+                    {showCustomIndustryInput ? (
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Enter industry name"
+                          value={customIndustryValue}
+                          onChange={(e) => setCustomIndustryValue(e.target.value)}
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => {
+                            if (customIndustryValue.trim()) {
+                              setCustomIndustries([...customIndustries, customIndustryValue.trim()]);
+                              setNewAccount({ ...newAccount, industry: customIndustryValue.trim() });
+                              setCustomIndustryValue("");
+                              setShowCustomIndustryInput(false);
+                            }
+                          }}
+                        >
+                          Add
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setShowCustomIndustryInput(false);
+                            setCustomIndustryValue("");
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ) : (
+                      <Select
+                        value={newAccount.industry}
+                        onValueChange={(value) => {
+                          if (value === "__add_custom__") {
+                            setShowCustomIndustryInput(true);
+                          } else {
+                            setNewAccount({ ...newAccount, industry: value });
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select industry" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[...industries, ...customIndustries].map((industry) => (
+                            <SelectItem key={industry} value={industry}>
+                              {industry}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="__add_custom__" className="text-primary">
+                            <span className="flex items-center gap-1">
+                              <Plus className="h-3 w-3" /> Add Custom Industry
+                            </span>
                           </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="website" className="flex items-center gap-1">
@@ -403,21 +455,67 @@ const B2BCorporate = () => {
               </div>
               <div className="grid gap-2">
                 <Label>Assign Account Manager</Label>
-                <Select
-                  value={newAccount.accountManager}
-                  onValueChange={(value) => setNewAccount({ ...newAccount, accountManager: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select account manager" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accountManagers.map((manager) => (
-                      <SelectItem key={manager} value={manager}>
-                        {manager}
+                {showCustomManagerInput ? (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter manager name"
+                      value={customManagerValue}
+                      onChange={(e) => setCustomManagerValue(e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        if (customManagerValue.trim()) {
+                          setCustomManagers([...customManagers, customManagerValue.trim()]);
+                          setNewAccount({ ...newAccount, accountManager: customManagerValue.trim() });
+                          setCustomManagerValue("");
+                          setShowCustomManagerInput(false);
+                        }
+                      }}
+                    >
+                      Add
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setShowCustomManagerInput(false);
+                        setCustomManagerValue("");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <Select
+                    value={newAccount.accountManager}
+                    onValueChange={(value) => {
+                      if (value === "__add_custom__") {
+                        setShowCustomManagerInput(true);
+                      } else {
+                        setNewAccount({ ...newAccount, accountManager: value });
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select account manager" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[...accountManagers, ...customManagers].map((manager) => (
+                        <SelectItem key={manager} value={manager}>
+                          {manager}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="__add_custom__" className="text-primary">
+                        <span className="flex items-center gap-1">
+                          <Plus className="h-3 w-3" /> Add Custom Manager
+                        </span>
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
 
