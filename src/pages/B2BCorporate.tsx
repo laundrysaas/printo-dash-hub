@@ -2,6 +2,12 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { 
   Building2, 
   FileText, 
@@ -14,12 +20,202 @@ import {
   Eye,
   Mail,
   Phone,
-  Calendar
+  Calendar,
+  Globe,
+  MapPin,
+  CreditCard,
+  Star,
+  Briefcase
 } from "lucide-react";
 import { NewOrderDialog } from "@/components/orders/NewOrderDialog";
+import { toast } from "@/hooks/use-toast";
+
+interface CorporateAccount {
+  id: string;
+  companyName: string;
+  industry: string;
+  website: string;
+  address: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  tier: string;
+  paymentTerms: string;
+  creditLimit: string;
+  notes: string;
+  status: string;
+}
+
+const industries = [
+  "Technology",
+  "Marketing & Advertising",
+  "Healthcare",
+  "Finance & Banking",
+  "Retail",
+  "Manufacturing",
+  "Education",
+  "Real Estate",
+  "Hospitality",
+  "Government",
+  "Other",
+];
+
+const accountManagers = [
+  "John Davis",
+  "Sarah Mitchell",
+  "Robert Chen",
+];
 
 const B2BCorporate = () => {
   const [newOrderOpen, setNewOrderOpen] = useState(false);
+  const [addAccountOpen, setAddAccountOpen] = useState(false);
+  const [corporateAccounts, setCorporateAccounts] = useState<CorporateAccount[]>([
+    {
+      id: "CA-001",
+      companyName: "Tech Solutions Inc.",
+      industry: "Technology",
+      website: "techsolutions.com",
+      address: "Kuwait City",
+      contactName: "Ahmed Al-Rashid",
+      contactEmail: "ahmed@techsolutions.com",
+      contactPhone: "+965 1234 5678",
+      tier: "premium",
+      paymentTerms: "net30",
+      creditLimit: "50000",
+      notes: "",
+      status: "Active",
+    },
+    {
+      id: "CA-002",
+      companyName: "Global Marketing Group",
+      industry: "Marketing & Advertising",
+      website: "globalmarketing.com",
+      address: "Salmiya",
+      contactName: "Sara Al-Fahad",
+      contactEmail: "sara@globalmarketing.com",
+      contactPhone: "+965 2345 6789",
+      tier: "enterprise",
+      paymentTerms: "net45",
+      creditLimit: "100000",
+      notes: "",
+      status: "Active",
+    },
+    {
+      id: "CA-003",
+      companyName: "Design Studio Pro",
+      industry: "Marketing & Advertising",
+      website: "designstudiopro.com",
+      address: "Hawalli",
+      contactName: "Khalid Al-Mutairi",
+      contactEmail: "khalid@designstudiopro.com",
+      contactPhone: "+965 3456 7890",
+      tier: "standard",
+      paymentTerms: "net15",
+      creditLimit: "20000",
+      notes: "",
+      status: "Pending Review",
+    },
+  ]);
+
+  const [newAccount, setNewAccount] = useState({
+    companyName: "",
+    industry: "",
+    website: "",
+    address: "",
+    contactName: "",
+    contactEmail: "",
+    contactPhone: "",
+    tier: "standard",
+    paymentTerms: "net30",
+    creditLimit: "",
+    accountManager: "",
+    notes: "",
+  });
+
+  const generateAccountId = () => {
+    const maxId = corporateAccounts.reduce((max, acc) => {
+      const num = parseInt(acc.id.replace("CA-", ""));
+      return num > max ? num : max;
+    }, 0);
+    return `CA-${String(maxId + 1).padStart(3, "0")}`;
+  };
+
+  const handleAddAccount = () => {
+    if (!newAccount.companyName || !newAccount.contactName || !newAccount.contactEmail) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newAccount.contactEmail)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const account: CorporateAccount = {
+      id: generateAccountId(),
+      companyName: newAccount.companyName,
+      industry: newAccount.industry,
+      website: newAccount.website,
+      address: newAccount.address,
+      contactName: newAccount.contactName,
+      contactEmail: newAccount.contactEmail,
+      contactPhone: newAccount.contactPhone,
+      tier: newAccount.tier,
+      paymentTerms: newAccount.paymentTerms,
+      creditLimit: newAccount.creditLimit,
+      notes: newAccount.notes,
+      status: "Pending Review",
+    };
+
+    setCorporateAccounts([...corporateAccounts, account]);
+    setAddAccountOpen(false);
+    setNewAccount({
+      companyName: "",
+      industry: "",
+      website: "",
+      address: "",
+      contactName: "",
+      contactEmail: "",
+      contactPhone: "",
+      tier: "standard",
+      paymentTerms: "net30",
+      creditLimit: "",
+      accountManager: "",
+      notes: "",
+    });
+
+    toast({
+      title: "Corporate Account Created",
+      description: `${account.companyName} has been added successfully.`,
+    });
+  };
+
+  const getTierLabel = (tier: string) => {
+    switch (tier) {
+      case "standard": return "Standard Tier";
+      case "premium": return "Premium Tier";
+      case "enterprise": return "Enterprise Tier";
+      default: return tier;
+    }
+  };
+
+  const getMonthlyValue = (tier: string) => {
+    switch (tier) {
+      case "standard": return "12K KD/month";
+      case "premium": return "45K KD/month";
+      case "enterprise": return "78K KD/month";
+      default: return "";
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -33,7 +229,7 @@ const B2BCorporate = () => {
             <Plus className="h-4 w-4 mr-2" />
             New Order
           </Button>
-          <Button>
+          <Button onClick={() => setAddAccountOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Corporate Account
           </Button>
@@ -45,6 +241,257 @@ const B2BCorporate = () => {
         onOpenChange={setNewOrderOpen}
         onOrderCreated={() => {}}
       />
+
+      {/* Add Corporate Account Dialog */}
+      <Dialog open={addAccountOpen} onOpenChange={setAddAccountOpen}>
+        <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5 text-primary" />
+              Add New Corporate Account
+            </DialogTitle>
+            <DialogDescription>
+              Create a new B2B corporate account with company details and terms.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            {/* Company Information */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
+                <Briefcase className="h-4 w-4" />
+                Company Information
+              </h3>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="companyName">Company Name *</Label>
+                  <Input
+                    id="companyName"
+                    placeholder="e.g., Acme Corporation"
+                    value={newAccount.companyName}
+                    onChange={(e) => setNewAccount({ ...newAccount, companyName: e.target.value })}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Industry</Label>
+                    <Select
+                      value={newAccount.industry}
+                      onValueChange={(value) => setNewAccount({ ...newAccount, industry: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {industries.map((industry) => (
+                          <SelectItem key={industry} value={industry}>
+                            {industry}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="website" className="flex items-center gap-1">
+                      <Globe className="h-3 w-3" />
+                      Website
+                    </Label>
+                    <Input
+                      id="website"
+                      placeholder="www.company.com"
+                      value={newAccount.website}
+                      onChange={(e) => setNewAccount({ ...newAccount, website: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="address" className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    Address
+                  </Label>
+                  <Input
+                    id="address"
+                    placeholder="e.g., Kuwait City, Block 5"
+                    value={newAccount.address}
+                    onChange={(e) => setNewAccount({ ...newAccount, address: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Information */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
+                <Users className="h-4 w-4" />
+                Primary Contact
+              </h3>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="contactName">Contact Name *</Label>
+                  <Input
+                    id="contactName"
+                    placeholder="e.g., Ahmed Al-Rashid"
+                    value={newAccount.contactName}
+                    onChange={(e) => setNewAccount({ ...newAccount, contactName: e.target.value })}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="contactEmail" className="flex items-center gap-1">
+                      <Mail className="h-3 w-3" />
+                      Email *
+                    </Label>
+                    <Input
+                      id="contactEmail"
+                      type="email"
+                      placeholder="contact@company.com"
+                      value={newAccount.contactEmail}
+                      onChange={(e) => setNewAccount({ ...newAccount, contactEmail: e.target.value })}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="contactPhone" className="flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      Phone
+                    </Label>
+                    <Input
+                      id="contactPhone"
+                      placeholder="+965 1234 5678"
+                      value={newAccount.contactPhone}
+                      onChange={(e) => setNewAccount({ ...newAccount, contactPhone: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Account Tier */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
+                <Star className="h-4 w-4" />
+                Account Tier
+              </h3>
+              <RadioGroup
+                value={newAccount.tier}
+                onValueChange={(value) => setNewAccount({ ...newAccount, tier: value })}
+                className="grid grid-cols-3 gap-3"
+              >
+                <div>
+                  <RadioGroupItem value="standard" id="tier-standard" className="peer sr-only" />
+                  <Label
+                    htmlFor="tier-standard"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                  >
+                    <span className="text-sm font-medium">Standard</span>
+                    <span className="text-xs text-muted-foreground mt-1">Up to 20K KD</span>
+                    <Badge variant="secondary" className="mt-2">10% Discount</Badge>
+                  </Label>
+                </div>
+                <div>
+                  <RadioGroupItem value="premium" id="tier-premium" className="peer sr-only" />
+                  <Label
+                    htmlFor="tier-premium"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                  >
+                    <span className="text-sm font-medium">Premium</span>
+                    <span className="text-xs text-muted-foreground mt-1">20K - 50K KD</span>
+                    <Badge variant="secondary" className="mt-2">15% Discount</Badge>
+                  </Label>
+                </div>
+                <div>
+                  <RadioGroupItem value="enterprise" id="tier-enterprise" className="peer sr-only" />
+                  <Label
+                    htmlFor="tier-enterprise"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                  >
+                    <span className="text-sm font-medium">Enterprise</span>
+                    <span className="text-xs text-muted-foreground mt-1">50K+ KD</span>
+                    <Badge variant="secondary" className="mt-2">25% Discount</Badge>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Payment Terms */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
+                <CreditCard className="h-4 w-4" />
+                Payment Terms
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label>Payment Terms</Label>
+                  <Select
+                    value={newAccount.paymentTerms}
+                    onValueChange={(value) => setNewAccount({ ...newAccount, paymentTerms: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="prepaid">Prepaid</SelectItem>
+                      <SelectItem value="net15">Net 15 Days</SelectItem>
+                      <SelectItem value="net30">Net 30 Days</SelectItem>
+                      <SelectItem value="net45">Net 45 Days</SelectItem>
+                      <SelectItem value="net60">Net 60 Days</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="creditLimit">Credit Limit (KD)</Label>
+                  <Input
+                    id="creditLimit"
+                    type="number"
+                    placeholder="e.g., 50000"
+                    value={newAccount.creditLimit}
+                    onChange={(e) => setNewAccount({ ...newAccount, creditLimit: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label>Assign Account Manager</Label>
+                <Select
+                  value={newAccount.accountManager}
+                  onValueChange={(value) => setNewAccount({ ...newAccount, accountManager: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select account manager" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {accountManagers.map((manager) => (
+                      <SelectItem key={manager} value={manager}>
+                        {manager}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div className="grid gap-2">
+              <Label htmlFor="notes">Additional Notes</Label>
+              <Textarea
+                id="notes"
+                placeholder="Any special requirements or notes about this account..."
+                value={newAccount.notes}
+                onChange={(e) => setNewAccount({ ...newAccount, notes: e.target.value })}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddAccountOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddAccount}>
+              <Building2 className="h-4 w-4 mr-2" />
+              Create Account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Stats Overview */}
       <div className="grid gap-6 md:grid-cols-4">
@@ -108,38 +555,22 @@ const B2BCorporate = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-primary" />
-                    <h4 className="font-semibold">Tech Solutions Inc.</h4>
+              {corporateAccounts.slice(0, 3).map((account) => (
+                <div key={account.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">{account.companyName}</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {getTierLabel(account.tier)} • {getMonthlyValue(account.tier)}
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground">Premium Tier • 45K KD/month</p>
+                  <Badge variant={account.status === "Active" ? "default" : "secondary"}>
+                    {account.status}
+                  </Badge>
                 </div>
-                <Badge>Active</Badge>
-              </div>
-
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-primary" />
-                    <h4 className="font-semibold">Global Marketing Group</h4>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Enterprise Tier • 78K KD/month</p>
-                </div>
-                <Badge>Active</Badge>
-              </div>
-
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-primary" />
-                    <h4 className="font-semibold">Design Studio Pro</h4>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Standard Tier • 12K KD/month</p>
-                </div>
-                <Badge variant="secondary">Pending Review</Badge>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>
