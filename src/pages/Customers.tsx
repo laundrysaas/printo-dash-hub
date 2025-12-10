@@ -29,6 +29,7 @@ interface Customer {
 export default function Customers() {
   const { toast } = useToast();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<string | null>(null);
   const [locations, setLocations] = useState(defaultLocations);
   const [showAddLocation, setShowAddLocation] = useState(false);
   const [newLocation, setNewLocation] = useState("");
@@ -42,6 +43,37 @@ export default function Customers() {
     notes: "",
     status: "Active",
   });
+
+  const resetForm = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      location: "",
+      company: "",
+      notes: "",
+      status: "Active",
+    });
+    setEditingCustomer(null);
+    setShowAddLocation(false);
+  };
+
+  const handleEditCustomer = (customer: Customer) => {
+    const nameParts = customer.name.split(" ");
+    setFormData({
+      firstName: nameParts[0] || "",
+      lastName: nameParts.slice(1).join(" ") || "",
+      email: customer.email,
+      phone: customer.phone,
+      location: customer.location,
+      company: "",
+      notes: "",
+      status: customer.status,
+    });
+    setEditingCustomer(customer.id);
+    setAddDialogOpen(true);
+  };
 
   const handleAddLocation = () => {
     if (!newLocation.trim()) return;
@@ -171,22 +203,19 @@ export default function Customers() {
     }
   };
 
-  const handleAddCustomer = () => {
+  const handleSaveCustomer = () => {
     if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.location) {
       toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
       return;
     }
-    toast({ title: "Customer Added", description: `${formData.firstName} ${formData.lastName} has been added successfully` });
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      location: "",
-      company: "",
-      notes: "",
-      status: "Active",
-    });
+    
+    if (editingCustomer) {
+      toast({ title: "Customer Updated", description: `${formData.firstName} ${formData.lastName} has been updated successfully` });
+    } else {
+      toast({ title: "Customer Added", description: `${formData.firstName} ${formData.lastName} has been added successfully` });
+    }
+    
+    resetForm();
     setAddDialogOpen(false);
   };
 
@@ -238,7 +267,7 @@ export default function Customers() {
               <SelectItem value="Inactive">Inactive</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="sm" onClick={() => setAddDialogOpen(true)}>
+          <Button size="sm" onClick={() => { resetForm(); setAddDialogOpen(true); }}>
             <Plus className="mr-2 h-4 w-4" />
             Add Customer
           </Button>
@@ -305,7 +334,7 @@ export default function Customers() {
                   <TableCell>{getStatusBadge(customer.status)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" onClick={() => handleEditCustomer(customer)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon">
@@ -380,7 +409,7 @@ export default function Customers() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Add New Customer
+              {editingCustomer ? "Edit Customer" : "Add New Customer"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 py-4">
@@ -533,12 +562,21 @@ export default function Customers() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
+            <Button variant="outline" onClick={() => { resetForm(); setAddDialogOpen(false); }}>
               Cancel
             </Button>
-            <Button onClick={handleAddCustomer}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Customer
+            <Button onClick={handleSaveCustomer}>
+              {editingCustomer ? (
+                <>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Update Customer
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Customer
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
