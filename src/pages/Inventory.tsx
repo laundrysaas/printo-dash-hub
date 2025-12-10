@@ -33,16 +33,6 @@ const initialCategories = [
   "Equipment Parts",
 ];
 
-const unitTypes = [
-  "sheets",
-  "units",
-  "boxes",
-  "rolls",
-  "packs",
-  "pieces",
-  "kg",
-  "liters",
-];
 
 export default function Inventory() {
   const [stockItems, setStockItems] = useState<StockItem[]>([
@@ -93,10 +83,8 @@ export default function Inventory() {
   const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
   const [customCategoryName, setCustomCategoryName] = useState("");
   const [newItem, setNewItem] = useState({
-    name: "",
     category: "",
     quantity: "",
-    unit: "units",
     reorderLevel: "",
     costPerUnit: "",
     supplier: "",
@@ -134,7 +122,7 @@ export default function Inventory() {
   };
 
   const handleAddItem = () => {
-    if (!newItem.name || !newItem.category || !newItem.quantity || !newItem.reorderLevel) {
+    if (!newItem.category || !newItem.quantity || !newItem.reorderLevel) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -148,10 +136,10 @@ export default function Inventory() {
 
     const item: StockItem = {
       id: generateItemId(),
-      name: newItem.name,
+      name: newItem.category,
       category: newItem.category,
       quantity: quantity,
-      unit: newItem.unit,
+      unit: "units",
       reorderLevel: reorderLevel,
       status: calculateStatus(quantity, reorderLevel),
       lastRestocked: new Date().toISOString().split("T")[0],
@@ -162,10 +150,8 @@ export default function Inventory() {
     setStockItems([...stockItems, item]);
     setAddDialogOpen(false);
     setNewItem({
-      name: "",
       category: "",
       quantity: "",
-      unit: "units",
       reorderLevel: "",
       costPerUnit: "",
       supplier: "",
@@ -294,15 +280,6 @@ export default function Inventory() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Item Name *</Label>
-              <Input
-                id="name"
-                placeholder="e.g., Premium Paper Stock A4"
-                value={newItem.name}
-                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-              />
-            </div>
 
             <div className="grid gap-2">
               <Label>Category *</Label>
@@ -374,36 +351,16 @@ export default function Inventory() {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="quantity">Initial Quantity *</Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  min="0"
-                  placeholder="e.g., 1000"
-                  value={newItem.quantity}
-                  onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label>Unit Type</Label>
-                <Select
-                  value={newItem.unit}
-                  onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {unitTypes.map((unit) => (
-                      <SelectItem key={unit} value={unit}>
-                        {unit}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="grid gap-2">
+              <Label htmlFor="quantity">Initial Quantity *</Label>
+              <Input
+                id="quantity"
+                type="number"
+                min="0"
+                placeholder="e.g., 1000"
+                value={newItem.quantity}
+                onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
