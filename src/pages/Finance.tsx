@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Filter, Download, CreditCard, Banknote, Smartphone, TrendingUp, TrendingDown, DollarSign, ArrowUpRight, ArrowDownRight, RotateCcw, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 
 export default function Finance() {
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("all");
+  const [refundStatusFilter, setRefundStatusFilter] = useState("all");
   const invoices = [
     {
       id: "INV-001",
@@ -280,10 +284,19 @@ export default function Finance() {
               <Input placeholder="Search payments..." className="pl-9" />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filters
-              </Button>
+              <Select value={paymentStatusFilter} onValueChange={setPaymentStatusFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <Filter className="mr-2 h-4 w-4" />
+                  <SelectValue placeholder="Filter by Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Processing">Processing</SelectItem>
+                  <SelectItem value="Failed">Failed</SelectItem>
+                </SelectContent>
+              </Select>
               <Button variant="outline" size="sm">
                 <Download className="mr-2 h-4 w-4" />
                 Export
@@ -308,7 +321,9 @@ export default function Finance() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {payments.map((payment) => (
+                  {payments
+                    .filter((payment) => paymentStatusFilter === "all" || payment.status === paymentStatusFilter)
+                    .map((payment) => (
                     <TableRow key={payment.id}>
                       <TableCell className="font-medium">{payment.id}</TableCell>
                       <TableCell>{payment.customer}</TableCell>
@@ -412,10 +427,18 @@ export default function Finance() {
               <Input placeholder="Search refunds..." className="pl-9" />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filters
-              </Button>
+              <Select value={refundStatusFilter} onValueChange={setRefundStatusFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <Filter className="mr-2 h-4 w-4" />
+                  <SelectValue placeholder="Filter by Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Approved">Approved</SelectItem>
+                  <SelectItem value="Rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
               <Button variant="outline" size="sm">
                 <Download className="mr-2 h-4 w-4" />
                 Export
