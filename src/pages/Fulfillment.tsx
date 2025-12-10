@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -22,7 +23,7 @@ interface Route {
   status: string;
   cod: string;
   date?: Date;
-  area?: string;
+  areas?: string[];
 }
 
 const initialDrivers = [
@@ -68,7 +69,7 @@ const Fulfillment = () => {
     invoiceAmount: "",
     status: "pending",
     date: undefined as Date | undefined,
-    area: "",
+    selectedAreas: [] as string[],
   });
 
   const getStatusColor = (status: string) => {
@@ -96,10 +97,10 @@ const Fulfillment = () => {
   };
 
   const handleCreateRoute = () => {
-    if (!newRoute.driver || !newRoute.stops || !newRoute.date || !newRoute.area) {
+    if (!newRoute.driver || !newRoute.stops || !newRoute.date || newRoute.selectedAreas.length === 0) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields including at least one delivery area.",
         variant: "destructive",
       });
       return;
@@ -113,7 +114,7 @@ const Fulfillment = () => {
       status: newRoute.status,
       cod: newRoute.invoiceAmount || "0.00",
       date: newRoute.date,
-      area: newRoute.area,
+      areas: newRoute.selectedAreas,
     };
 
     setRoutes([...routes, route]);
@@ -124,7 +125,7 @@ const Fulfillment = () => {
       invoiceAmount: "",
       status: "pending",
       date: undefined,
-      area: "",
+      selectedAreas: [],
     });
     setShowCustomDriverInput(false);
     setShowCustomAreaInput(false);
@@ -304,9 +305,39 @@ const Fulfillment = () => {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="area">Delivery Area *</Label>
+              <Label>Delivery Areas * ({newRoute.selectedAreas.length} selected)</Label>
+              <div className="border rounded-md p-3 max-h-48 overflow-y-auto space-y-2">
+                {areas.map((area) => (
+                  <div key={area} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`area-${area}`}
+                      checked={newRoute.selectedAreas.includes(area)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setNewRoute({
+                            ...newRoute,
+                            selectedAreas: [...newRoute.selectedAreas, area],
+                          });
+                        } else {
+                          setNewRoute({
+                            ...newRoute,
+                            selectedAreas: newRoute.selectedAreas.filter((a) => a !== area),
+                          });
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor={`area-${area}`}
+                      className="flex items-center gap-2 text-sm cursor-pointer"
+                    >
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      {area}
+                    </label>
+                  </div>
+                ))}
+              </div>
               {showCustomAreaInput ? (
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-2">
                   <Input
                     placeholder="Enter area name"
                     value={customAreaName}
@@ -317,13 +348,17 @@ const Fulfillment = () => {
                     size="sm"
                     onClick={() => {
                       if (customAreaName.trim()) {
-                        setAreas([...areas, customAreaName.trim()]);
-                        setNewRoute({ ...newRoute, area: customAreaName.trim() });
+                        const newArea = customAreaName.trim();
+                        setAreas([...areas, newArea]);
+                        setNewRoute({
+                          ...newRoute,
+                          selectedAreas: [...newRoute.selectedAreas, newArea],
+                        });
                         setCustomAreaName("");
                         setShowCustomAreaInput(false);
                         toast({
                           title: "Area Added",
-                          description: `${customAreaName.trim()} has been added to the list.`,
+                          description: `${newArea} has been added and selected.`,
                         });
                       }
                     }}
@@ -343,36 +378,16 @@ const Fulfillment = () => {
                   </Button>
                 </div>
               ) : (
-                <Select
-                  value={newRoute.area}
-                  onValueChange={(value) => {
-                    if (value === "__add_custom__") {
-                      setShowCustomAreaInput(true);
-                    } else {
-                      setNewRoute({ ...newRoute, area: value });
-                    }
-                  }}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomAreaInput(true)}
+                  className="w-fit"
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select delivery area" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {areas.map((area) => (
-                      <SelectItem key={area} value={area}>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          {area}
-                        </div>
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="__add_custom__">
-                      <div className="flex items-center gap-2 text-primary">
-                        <Plus className="h-4 w-4" />
-                        Add Custom Area
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Custom Area
+                </Button>
               )}
             </div>
 
