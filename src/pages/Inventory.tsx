@@ -1,29 +1,51 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Package, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Package, AlertTriangle, TrendingUp, TrendingDown, Plus, X } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+
+interface StockItem {
+  id: string;
+  name: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  reorderLevel: number;
+  status: string;
+  lastRestocked: string;
+  costPerUnit?: string;
+  supplier?: string;
+}
+
+const initialCategories = [
+  "Paper",
+  "Consumables",
+  "Binding",
+  "Ink & Toner",
+  "Packaging",
+  "Equipment Parts",
+];
+
+const unitTypes = [
+  "sheets",
+  "units",
+  "boxes",
+  "rolls",
+  "packs",
+  "pieces",
+  "kg",
+  "liters",
+];
 
 export default function Inventory() {
-  const stats = [
-    {
-      label: "Total Items",
-      value: "1,234",
-      change: "+5.2%",
-      trend: "up",
-      icon: Package,
-    },
-    {
-      label: "Low Stock Items",
-      value: "23",
-      change: "-2 from yesterday",
-      trend: "warning",
-      icon: AlertTriangle,
-    },
-  ];
-
-  const stockItems = [
+  const [stockItems, setStockItems] = useState<StockItem[]>([
     {
       id: "INV-001",
       name: "Premium Paper Stock A4",
@@ -64,61 +86,98 @@ export default function Inventory() {
       status: "Low Stock",
       lastRestocked: "2023-12-28",
     },
+  ]);
+
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [categories, setCategories] = useState(initialCategories);
+  const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
+  const [customCategoryName, setCustomCategoryName] = useState("");
+  const [newItem, setNewItem] = useState({
+    name: "",
+    category: "",
+    quantity: "",
+    unit: "units",
+    reorderLevel: "",
+    costPerUnit: "",
+    supplier: "",
+  });
+
+  const stats = [
+    {
+      label: "Total Items",
+      value: stockItems.length.toString(),
+      change: "+5.2%",
+      trend: "up",
+      icon: Package,
+    },
+    {
+      label: "Low Stock Items",
+      value: stockItems.filter(item => item.status === "Low Stock").length.toString(),
+      change: "-2 from yesterday",
+      trend: "warning",
+      icon: AlertTriangle,
+    },
   ];
 
-  const purchaseOrders = [
-    {
-      id: "PO-2024-001",
-      vendor: "Al-Wazzan Trading Co.",
-      items: "Paper Stock, Envelopes",
-      amount: "KD 2,450.00",
-      status: "Pending",
-      expectedDate: "2024-01-20",
-    },
-    {
-      id: "PO-2024-002",
-      vendor: "Gulf Supplies LLC",
-      items: "Toner Cartridges",
-      amount: "KD 1,200.00",
-      status: "Shipped",
-      expectedDate: "2024-01-18",
-    },
-    {
-      id: "PO-2024-003",
-      vendor: "Kuwait Office Solutions",
-      items: "Binding Materials",
-      amount: "KD 850.00",
-      status: "Delivered",
-      expectedDate: "2024-01-15",
-    },
-  ];
+  const generateItemId = () => {
+    const maxId = stockItems.reduce((max, item) => {
+      const num = parseInt(item.id.replace("INV-", ""));
+      return num > max ? num : max;
+    }, 0);
+    return `INV-${String(maxId + 1).padStart(3, "0")}`;
+  };
 
-  const vendors = [
-    {
-      name: "Al-Wazzan Trading Co.",
-      category: "Paper Supplier",
-      contact: "+965 2222 3333",
-      email: "info@alwazzan.com.kw",
-      status: "Active",
-      orders: 24,
-    },
-    {
-      name: "Gulf Supplies LLC",
-      category: "Consumables",
-      contact: "+965 2222 4444",
-      email: "sales@gulfsupplies.com",
-      status: "Active",
-      orders: 18,
-    },
-    {
-      name: "Kuwait Office Solutions",
-      category: "General Supplies",
-      contact: "+965 2222 5555",
-      email: "orders@kos.com.kw",
-      status: "Active",
-      orders: 32,
-    },
-  ];
+  const calculateStatus = (quantity: number, reorderLevel: number) => {
+    if (quantity === 0) return "Out of Stock";
+    if (quantity <= reorderLevel) return "Low Stock";
+    return "In Stock";
+  };
+
+  const handleAddItem = () => {
+    if (!newItem.name || !newItem.category || !newItem.quantity || !newItem.reorderLevel) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const quantity = parseInt(newItem.quantity);
+    const reorderLevel = parseInt(newItem.reorderLevel);
+
+    const item: StockItem = {
+      id: generateItemId(),
+      name: newItem.name,
+      category: newItem.category,
+      quantity: quantity,
+      unit: newItem.unit,
+      reorderLevel: reorderLevel,
+      status: calculateStatus(quantity, reorderLevel),
+      lastRestocked: new Date().toISOString().split("T")[0],
+      costPerUnit: newItem.costPerUnit || undefined,
+      supplier: newItem.supplier || undefined,
+    };
+
+    setStockItems([...stockItems, item]);
+    setAddDialogOpen(false);
+    setNewItem({
+      name: "",
+      category: "",
+      quantity: "",
+      unit: "units",
+      reorderLevel: "",
+      costPerUnit: "",
+      supplier: "",
+    });
+    setShowCustomCategoryInput(false);
+    setCustomCategoryName("");
+
+    toast({
+      title: "Item Added",
+      description: `${item.name} has been added to inventory.`,
+    });
+  };
 
   const getStockStatusBadge = (status: string) => {
     switch (status) {
@@ -133,24 +192,11 @@ export default function Inventory() {
     }
   };
 
-  const getPOStatusBadge = (status: string) => {
-    switch (status) {
-      case "Delivered":
-        return <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20">Delivered</Badge>;
-      case "Shipped":
-        return <Badge className="bg-blue-500/10 text-blue-700 hover:bg-blue-500/20">Shipped</Badge>;
-      case "Pending":
-        return <Badge className="bg-yellow-500/10 text-yellow-700 hover:bg-yellow-500/20">Pending</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Inventory & Procurement</h1>
-        <p className="text-muted-foreground">Stock levels, purchase orders, and vendor management</p>
+        <p className="text-muted-foreground">Stock levels and inventory management</p>
       </div>
 
       {/* Stats Cards */}
@@ -184,8 +230,6 @@ export default function Inventory() {
       <Tabs defaultValue="stock-levels" className="space-y-6">
         <TabsList>
           <TabsTrigger value="stock-levels">Stock Levels</TabsTrigger>
-          <TabsTrigger value="purchase-orders">Purchase Orders</TabsTrigger>
-          <TabsTrigger value="vendors">Vendor Management</TabsTrigger>
         </TabsList>
 
         <TabsContent value="stock-levels" className="space-y-4">
@@ -193,7 +237,10 @@ export default function Inventory() {
             <p className="text-sm text-muted-foreground">
               Monitor inventory levels and reorder points
             </p>
-            <Button>Add Item</Button>
+            <Button onClick={() => setAddDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Item
+            </Button>
           </div>
 
           <Card>
@@ -235,99 +282,176 @@ export default function Inventory() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="purchase-orders" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              Track and manage purchase orders
-            </p>
-            <Button>Create PO</Button>
-          </div>
-
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>PO Number</TableHead>
-                    <TableHead>Vendor</TableHead>
-                    <TableHead>Items</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Expected Date</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {purchaseOrders.map((po) => (
-                    <TableRow key={po.id}>
-                      <TableCell className="font-medium">{po.id}</TableCell>
-                      <TableCell>{po.vendor}</TableCell>
-                      <TableCell>{po.items}</TableCell>
-                      <TableCell className="font-medium">{po.amount}</TableCell>
-                      <TableCell>{getPOStatusBadge(po.status)}</TableCell>
-                      <TableCell>{po.expectedDate}</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          View
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="vendors" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              Manage supplier relationships and contacts
-            </p>
-            <Button>Add Vendor</Button>
-          </div>
-
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Vendor Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Total Orders</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {vendors.map((vendor) => (
-                    <TableRow key={vendor.name}>
-                      <TableCell className="font-medium">{vendor.name}</TableCell>
-                      <TableCell>{vendor.category}</TableCell>
-                      <TableCell>{vendor.contact}</TableCell>
-                      <TableCell>{vendor.email}</TableCell>
-                      <TableCell>
-                        <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20">
-                          {vendor.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{vendor.orders}</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
+
+      {/* Add Item Dialog */}
+      <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add New Inventory Item</DialogTitle>
+            <DialogDescription>
+              Enter the details for the new inventory item.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Item Name *</Label>
+              <Input
+                id="name"
+                placeholder="e.g., Premium Paper Stock A4"
+                value={newItem.name}
+                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label>Category *</Label>
+              {showCustomCategoryInput ? (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter category name"
+                    value={customCategoryName}
+                    onChange={(e) => setCustomCategoryName(e.target.value)}
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      if (customCategoryName.trim()) {
+                        setCategories([...categories, customCategoryName.trim()]);
+                        setNewItem({ ...newItem, category: customCategoryName.trim() });
+                        setCustomCategoryName("");
+                        setShowCustomCategoryInput(false);
+                        toast({
+                          title: "Category Added",
+                          description: `${customCategoryName.trim()} has been added.`,
+                        });
+                      }
+                    }}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setShowCustomCategoryInput(false);
+                      setCustomCategoryName("");
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Select
+                  value={newItem.category}
+                  onValueChange={(value) => {
+                    if (value === "__add_custom__") {
+                      setShowCustomCategoryInput(true);
+                    } else {
+                      setNewItem({ ...newItem, category: value });
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="__add_custom__">
+                      <div className="flex items-center gap-2 text-primary">
+                        <Plus className="h-4 w-4" />
+                        Add Custom Category
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="quantity">Initial Quantity *</Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  min="0"
+                  placeholder="e.g., 1000"
+                  value={newItem.quantity}
+                  onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Unit Type</Label>
+                <Select
+                  value={newItem.unit}
+                  onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unitTypes.map((unit) => (
+                      <SelectItem key={unit} value={unit}>
+                        {unit}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="reorderLevel">Reorder Level *</Label>
+                <Input
+                  id="reorderLevel"
+                  type="number"
+                  min="0"
+                  placeholder="e.g., 200"
+                  value={newItem.reorderLevel}
+                  onChange={(e) => setNewItem({ ...newItem, reorderLevel: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="costPerUnit">Cost Per Unit (KD)</Label>
+                <Input
+                  id="costPerUnit"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={newItem.costPerUnit}
+                  onChange={(e) => setNewItem({ ...newItem, costPerUnit: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="supplier">Supplier (Optional)</Label>
+              <Input
+                id="supplier"
+                placeholder="e.g., Al-Wazzan Trading Co."
+                value={newItem.supplier}
+                onChange={(e) => setNewItem({ ...newItem, supplier: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddItem}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Item
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
